@@ -10,6 +10,7 @@ const sharingcontainer = document.querySelector('.sharing-container')
 const copyBtn = document.querySelector('#copy-btn')
 const toast = document.querySelector('.toast')
 
+const maxFileAllowed = 100 * 1024 * 1024
 
 const baseURL = "https://innshare.herokuapp.com";
 const uploadURL = `${baseURL}/api/files`;
@@ -54,9 +55,20 @@ copyBtn.addEventListener('click',(e)=>{
 
 const uploadFiles = () =>{
 
-    progressContainer.style.display = "block"
-
+    
+    if (fileInput.files.length > 1) {
+        fileInput.value = ""
+        showToast("Upload only one file")
+        return
+    }
     const file = fileInput.files[0]
+    if (file.size > maxFileAllowed) {
+        fileInput.value = ""
+        showToast("Cannot upload more then 100MB")
+    }
+    
+    
+    progressContainer.style.display = "block"
     const formData = new FormData()
     formData.append("myfile",file)
 

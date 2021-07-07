@@ -165,3 +165,9 @@ p.expire{
     font-size: 18px;
     transition: transform ease-in-out 0.2s;
 }
+
+@media screen and (max-width:900px) {
+    :root{
+        --container-width:320px;
+    }
+}
