@@ -1,6 +1,14 @@
 const dropZone = document.querySelector('.drop-zone')
 const fileInput = document.querySelector('#fileinput')
 const browseBtn = document.querySelector('.browseBtn')
+const bgProgress = document.querySelector('.bg-progress')
+const percentDiv = document.querySelector('#persent')
+const progressbar = document.querySelector('.progress-bar')
+const progressContainer = document.querySelector('.progress-continer')
+const fileURL = document.querySelector('#fileURL')
+const sharingcontainer = document.querySelector('.sharing-container')
+const copyBtn = document.querySelector('#copy-btn')
+const toast = document.querySelector('.toast')
 
 
 const baseURL = "https://innshare.herokuapp.com";
@@ -38,8 +46,15 @@ fileInput.addEventListener('change',()=>{
 browseBtn.addEventListener("click",(e)=>{
     fileInput.click() 
 })
+copyBtn.addEventListener('click',(e)=>{
+    fileURL.select()
+    document.execCommand("copy")
+    showToast("Copy to clipboard")
+})
 
 const uploadFiles = () =>{
+
+    progressContainer.style.display = "block"
 
     const file = fileInput.files[0]
     const formData = new FormData()
@@ -51,10 +66,16 @@ const uploadFiles = () =>{
         // console.log(xhr.readyState)
         if (xhr.readyState === XMLHttpRequest.DONE) {
             console.log(xhr.response)
+            showLink(JSON.parse(xhr.response))
         }
     }
 
     xhr.upload.onprogress = updateProgress; 
+
+    xhr.upload.onerror = ()=>{
+        fileInput.value = ""
+        showToast(`Error in upload : ${xhr.statusText}`)
+    }
 
     xhr.open('POST',uploadURL)
     xhr.send(formData)
@@ -63,7 +84,27 @@ const uploadFiles = () =>{
 const updateProgress = (e)=>{
 
     const persent =Math.round((e.loaded / e.total)*100)
-    
     // console.log(e)
-    console.log(persent)
+    // console.log(persent)
+
+    bgProgress.style.width = `${persent}%`
+    percentDiv.innerText = persent
+    progressbar.style.transform = `scaleX(${persent/100})`
+}
+
+const showLink = ({file: url})=>{
+    console.log(url)
+    progressContainer.style.display = 'none'
+    sharingcontainer.style.display = 'block'
+    fileURL.value = url
+}
+let tostTimer;
+
+const showToast=(msg)=>{
+    toast.innerText = msg;
+    toast.style.transform = "translate(-50%,0)"
+    clearTimeout(tostTimer)
+    tostTimer = setTimeout(() => {    
+        toast.style.transform = "translate(-50%,60px)"
+    }, 2000);
 }
