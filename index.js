@@ -12,7 +12,7 @@ const toast = document.querySelector('.toast')
 
 const maxFileAllowed = 100 * 1024 * 1024
 
-const baseURL = "https://innshare.herokuapp.com";
+const baseURL = "https://votishare-anuragsharna.herokuapp.com";
 const uploadURL = `${baseURL}/api/files`;
 // const emailURL = `${baseURL}/api/files/send`;
 
